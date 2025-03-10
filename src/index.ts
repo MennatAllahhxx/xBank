@@ -1,11 +1,16 @@
 import express, { Request, Response } from "express";
+import { AppDataSource } from './db/database.js'; 
 import dotenv from "dotenv";
+import 'reflect-metadata';
 
 dotenv.config();
 
-const app = express();
-const port = process.env.PORT || 3000;
+AppDataSource.initialize().then(async () => {
+    console.log('Database connected');
 
-app.get('/health', (req: Request, res: Response) => { res.status(200).send('Healthy server') });
+    const app = express();
+    const port = process.env.PORT || 3000;
 
-app.listen(port, () => console.log(`app is running on port: ${port}`));
+    app.get('/health', (req: Request, res: Response) => { res.status(200).send('Healthy server') });
+    app.listen(port, () => console.log(`app is running on port: ${port}`));
+}).catch((err: Error) => { console.log(err) });
