@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { AppDataSource } from './db/database.ts'; 
+import { AppDataSource } from './db/database.js'; 
 import dotenv from "dotenv";
 import 'reflect-metadata';
 

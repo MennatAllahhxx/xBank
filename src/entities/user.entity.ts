@@ -2,17 +2,17 @@ import {
     Entity, 
     Column
 } from 'typeorm';
-import { BaseEntity } from './base.entity.ts';
+import { BaseEntity } from './base.entity.js';
 
 @Entity()
 export class User extends BaseEntity {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
 
-    @Column()
+    @Column({ select: false })
     password: string;
 
     constructor(name: string, email: string, password: string) {
