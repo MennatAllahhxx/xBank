@@ -1,11 +1,16 @@
 {
-  "name": "xank",
+  "name": "xbank",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "ts-node-dev --poll src/index.ts",
     "build": "rimraf ./dist && tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "migration:gen": "npx typeorm-ts-node-esm migration:generate -d src/db/database.ts src/db/migrations/migration",
+    "migration:sync": "npx typeorm-ts-node-esm migration:run -d src/db/database.ts",
+    "migration:revert": "npx typeorm-ts-node-esm migration:revert -d src/db/database.ts src/db/migrations/migration",
+    "migration:drop": "npx typeorm-ts-node-esm schema:drop -d src/db/database.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +20,12 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "pg": "^8.13.3",
+    "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.21"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
+    "@types/node": "^22.13.10",
     "eslint": "^9.22.0",
     "jest": "^29.7.0",
     "rimraf": "^6.0.1",
