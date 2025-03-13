@@ -3,14 +3,15 @@ import {
     CreateDateColumn,
     UpdateDateColumn
 } from 'typeorm';
+import { BaseEntity } from '../../core/entities/base.entity.js';
 
-export class BaseEntity {
+export abstract class BaseOrmEntity extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
-    id!: string;
+    declare id: string;
 
     @CreateDateColumn({ type: 'timestamptz' })
-    createdAt!: Date;
+    declare createdAt: Date;
 
     @UpdateDateColumn({ type: 'timestamptz' })
-    updatedAt!: Date;
+    declare updatedAt: Date;
 }
