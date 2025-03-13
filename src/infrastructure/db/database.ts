@@ -8,6 +8,8 @@ if (!process.env.POSTGRES_USER || !process.env.POSTGRES_PASSWORD || !process.env
     throw new Error('Missing required database environment variables');
 }
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: process.env.POSTGRES_HOST || 'localhost',
@@ -17,7 +19,9 @@ export const AppDataSource = new DataSource({
     database: process.env.POSTGRES_DB,
     synchronize: true,
     logging: process.env.NODE_ENV !== 'production',
-    entities: ['dist/**/entities/**/*.orm-entity.js'],
+    entities: isProduction 
+        ? ["dist/**/*.orm-entity.js"]
+        : ["src/**/*.orm-entity.ts"],
     migrations: ['dist/infrastructure/db/migrations/**/*.js'],
     migrationsRun: true,
     migrationsTableName: 'migrations'
