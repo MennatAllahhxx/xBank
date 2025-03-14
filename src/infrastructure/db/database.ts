@@ -4,7 +4,11 @@ import 'reflect-metadata';
 
 dotenv.config();
 
-if (!process.env.POSTGRES_USER || !process.env.POSTGRES_PASSWORD || !process.env.POSTGRES_DB) throw new Error('Missing required database environment variables');
+if (!process.env.POSTGRES_USER || !process.env.POSTGRES_PASSWORD || !process.env.POSTGRES_DB) {
+    throw new Error('Missing required database environment variables');
+}
+
+const isProduction = process.env.NODE_ENV === "production";
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -13,10 +17,14 @@ export const AppDataSource = new DataSource({
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
-    synchronize: false,
+    synchronize: isProduction ? false : true,
     logging: process.env.NODE_ENV !== 'production',
-    entities: ['src/entities/**/*.ts'],
-    migrations: ['src/db/migrations/**/*.ts'],
+    entities: isProduction 
+        ? ["dist/**/*.orm-entity.js"]
+        : ["src/**/*.orm-entity.ts"],
+    migrations: isProduction
+        ? ['dist/infrastructure/db/migrations/**/*.js']
+        : ['src/infrastructure/db/migrations/**/*.ts'],
     migrationsRun: true,
     migrationsTableName: 'migrations'
 });
