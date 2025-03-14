@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../../application/services/user.service.js";
 import { User } from "../../core/entities/user.entity.js";
+import { AuthRequest } from "../types/auth.types.js";
 
 export class UserController {
     constructor(private userService: UserService) {
@@ -96,6 +97,22 @@ export class UserController {
                 res.status(200).json(userWithoutPassword);
             }
         } catch (err: any) {
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    getUserProfile = async (req: AuthRequest, res: Response) => {
+        try {            
+            const user: User | null = await this.userService.getUserById(req.user?.id as string);
+            
+            if (!user) {
+                res.status(404).json({ message: "User not found" });
+            } else {
+                const {password:_, ...userWithoutPassword} = user;
+                res.status(200).json(userWithoutPassword);
+            }
+        }
+        catch (err: any) {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
