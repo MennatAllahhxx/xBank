@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+branches: ["dev"]  # 👈 Add this line
 language: "en-US"
 early_access: false
 reviews:
@@ -13,3 +14,4 @@ reviews:
     drafts: false
 chat:
   auto_reply: true
+  auto_reply_message: "I'm currently busy, but I'll get back to you soon."
