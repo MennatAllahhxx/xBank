@@ -29,7 +29,7 @@ export class UserTypeOrmRepository implements UserRepository {
         );
     }
 
-    async updateUser(id: string, name?: string, email?: string, password?: string): Promise<User | null> {
+    async updateUser(id: string, name?: string, email?: string, password?: string): Promise<User> {
         const user: UserOrmEntity | null = await this.repo.findOneBy({id});
         if (!user) throw Error('User is not found');
 
