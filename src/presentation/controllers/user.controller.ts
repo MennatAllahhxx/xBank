@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../../application/services/user.service.js";
 import { User } from "../../core/entities/user.entity.js";
-
-interface AuthRequest extends Request {
-    user?: { id: string; email: string };
-}
+import { AuthRequest } from "../types/auth.types.js";
 
 export class UserController {
     constructor(private userService: UserService) {
