@@ -1,12 +1,13 @@
 import express from "express";
+import { container } from "tsyringe";
 import { UserController } from "../controllers/user.controller.js";
-import { UserTypeOrmRepository } from "../../infrastructure/repositories/user.typeorm.repo.js";
 import { UserService } from "../../application/services/user.service.js";
-import { AppDataSource } from "../../infrastructure/db/database.js";
+import { UserRepository } from "../../core/interfaces/user.repo.interface.js";
+;
 
 const UserRouter = express.Router();
 
-const userRepository = new UserTypeOrmRepository(AppDataSource);
+const userRepository = container.resolve<UserRepository>('UserRepository');
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 

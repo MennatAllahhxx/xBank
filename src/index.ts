@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import { AppDataSource } from './infrastructure/db/database.js'; 
+import { AppDataSource } from './infrastructure/db/database.js';
+import './infrastructure/di.js';
 import UserRouter from "./presentation/routes/user.route.js";
 
 dotenv.config();
