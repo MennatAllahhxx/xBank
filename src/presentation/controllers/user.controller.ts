@@ -66,9 +66,14 @@ export class UserController {
 
     login = async (req: Request, res: Response) => {
         try {
-            const { token, user } = await this.userService.generateAccessToken(req.body.email, req.body.password);
+            const {email, password} = req.body;
+            if (!email || !password) {
+                res.status(400).json({ message: "Email and password are required" });
+            }
 
-            const { id } = (user as any);
+            const { token, userWithoutPassword } = await this.userService.generateAccessToken(email, password);
+
+            const { id } = (userWithoutPassword as any);
 
             res.status(201).json({ access_token: token, user_id: id });
         } catch (err: any) {

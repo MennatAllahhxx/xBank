@@ -65,15 +65,26 @@ export class UserService {
     }
 
     async generateAccessToken(email: string, password: string) {
-        const user: User | null = await  this.userRepo.getUserByEmail(email);
+        if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not defined');
+
+        const user: User | null = await this.userRepo.getUserByEmail(email);
         if (!user) throw new Error('Email is not registered');
 
         const isMatchedPassword = await compare(password, user.password);
         if (!isMatchedPassword) throw Error('Invalid password');
 
-        const token = jwt.sign((user as any).id.toString(), process.env.JWT_SECRET as string);
+        const payload = {
+            id: (user as any).id,
+            email: user.email,
+            iat: Date.now()/1000
+        }
+        const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+            expiresIn: '10d'
+        });
 
-        return { token, user };
+        const { password: _, ...userWithoutPassword } = user;
+
+        return { token, userWithoutPassword };
     }
 
     async getAllUsers(page: number, limit: number) {
