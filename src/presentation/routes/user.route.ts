@@ -12,6 +12,7 @@ const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
 UserRouter.post('/auth/register', userController.createUser.bind(userController));
+UserRouter.post('/auth/login', userController.login.bind(userController));
 UserRouter.put('/user/:id', userController.updateUser.bind(userController));
 UserRouter.get('/user/email/:email', userController.getUserByEmail.bind(userController));
 UserRouter.get('/user/:id', userController.getUserById.bind(userController));

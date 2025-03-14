@@ -64,6 +64,27 @@ export class UserController {
         }
     }
 
+    login = async (req: Request, res: Response) => {
+        try {
+            const {email, password} = req.body;
+            if (!email || !password) {
+                res.status(400).json({ message: "Email and password are required" });
+            }
+
+            const { token, userWithoutPassword } = await this.userService.generateAccessToken(email, password);
+
+            const { id } = (userWithoutPassword as any);
+
+            res.status(201).json({ access_token: token, user_id: id });
+        } catch (err: any) {
+            if (err.message === 'Email is not registered' || err.message === 'Invalid password') {
+                res.status(400).json({ message: err.message });
+            } else {
+                res.status(500).json({ message: 'Internal server error' });
+            }
+        }
+    }
+
     getUserById = async (req: Request, res: Response) => {
         try {
             const user: User | null = await this.userService.getUserById(req.params.id);
