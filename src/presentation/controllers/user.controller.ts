@@ -12,8 +12,13 @@ export class UserController {
             const name: string = req.body.name;
             const email: string = req.body.email;
             const password: string = req.body.password;
-            const user: User = await this.userService.createUser(name, email, password);
-            res.status(201).json(user);
+
+            if (!name || !email || !password) {
+                res.status(400).json({ message: "name, email and password are all required" });
+            } else {
+                const user: User = await this.userService.createUser(name, email, password);
+                res.status(201).json(user);
+            }
         } catch (err: any) {
             res.status(500).json({ message: err.message });
         }
@@ -21,9 +26,9 @@ export class UserController {
 
     updateUser = async (req:Request, res: Response) => {
         try {
-            const name: string = req.body.name;
-            const email: string = req.body.email;
-            const password: string = req.body.password;
+            const name: string | undefined = req.body?.name;
+            const email: string | undefined = req.body?.email;
+            const password: string | undefined = req.body?.password;
             const id: string = req.params.id;
 
             const savedUser: User | null = await this.userService.updateUser(
@@ -31,9 +36,13 @@ export class UserController {
                 name,
                 email,
                 password
-            );            
-
-            res.status(201).json(savedUser);
+            );
+            
+            if (!savedUser) {
+                res.status(404).json({ message: "User not found" });
+            } else{
+                res.status(201).json(savedUser);
+            }
         } catch (err: any) {
             res.status(500).json({ message: err.message });
         }
@@ -43,7 +52,11 @@ export class UserController {
         try {
             const user: User | null = await this.userService.getUserById(req.params.id);
             
-            res.status(200).json(user);
+            if (!user) {
+                res.status(404).json({ message: "User not found" });
+            } else {
+                res.status(200).json(user);
+            }
         } catch (err: any) {
             res.status(401).json({ message: err.message });
         }
@@ -51,9 +64,13 @@ export class UserController {
 
     getUserByEmail = async (req:Request, res: Response) => {
         try {
-            const user: User | null = await this.userService.getUserByEmail(req.body.email);
+            const user: User | null = await this.userService.getUserByEmail(req.params.email);
             
-            res.status(200).json(user);
+            if (!user) {
+                res.status(404).json({ message: "User not found" });
+            } else {
+                res.status(200).json(user);
+            }
         } catch (err: any) {
             res.status(401).json({ message: err.message });
         }

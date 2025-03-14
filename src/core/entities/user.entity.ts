@@ -1,8 +1,16 @@
 import { BaseEntity } from './base.entity.js';
+import { IsEmail, Length } from 'class-validator';
+import { hash } from 'bcryptjs';
 
 export class User extends BaseEntity {
+    @Length(3, 255)
     name: string;
+
+    @Length(3, 255)
+    @IsEmail()
     email: string;
+
+    @Length(8, 255)
     password: string;
 
     constructor(

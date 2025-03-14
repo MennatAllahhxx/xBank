@@ -10,10 +10,10 @@ const userRepository = new UserTypeOrmRepository(AppDataSource);
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
-UserRouter.post('/user', userController.createUser);
-UserRouter.put('/user/:id', userController.updateUser);
-UserRouter.get('/user/:id', userController.getUserById);
-UserRouter.get('/user', userController.getUserByEmail);
-UserRouter.get('/users', userController.getAllUsers);
+UserRouter.post('/user', userController.createUser.bind(userController));
+UserRouter.put('/user/:id', userController.updateUser.bind(userController));
+UserRouter.get('/user/:id', userController.getUserById.bind(userController));
+UserRouter.get('/user/email/:email', userController.getUserByEmail.bind(userController));
+UserRouter.get('/users', userController.getAllUsers.bind(userController));
 
 export default UserRouter;

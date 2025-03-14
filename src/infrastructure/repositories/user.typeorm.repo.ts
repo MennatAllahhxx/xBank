@@ -31,13 +31,12 @@ export class UserTypeOrmRepository implements UserRepository {
 
     async updateUser(id: string, name?: string, email?: string, password?: string): Promise<User | null> {
         const user: UserOrmEntity | null = await this.repo.findOneBy({id});
+        if (!user) throw Error('User is not found');
 
-        if (user) {
-            if (name) user.name = name;
-            if (email) user.email = email;
-            if (password) user.password = password;
-            this.repo.save(user);
-        }        
+        if (name) user.name = name;
+        if (email) user.email = email;
+        if (password) user.password = password;
+        await this.repo.save(user);
 
         return user;
     }
@@ -74,21 +73,14 @@ export class UserTypeOrmRepository implements UserRepository {
 
     async getAllUsers(): Promise<Array<User>> {
         const users = await this.repo.find();
-        const foundUsers: Array<User> = [];
-        if (users) {
-            
-            users.forEach(user => {
-                foundUsers.push(new User(
-                    user.name,
-                    user.email,
-                    user.password,
-                    user.id,
-                    user.createdAt,
-                    user.updatedAt
-                ));
-            });
-        }
 
-        return foundUsers;
+        return users.map(user => new User(
+            user.name,
+            user.email,
+            user.password,
+            user.id,
+            user.createdAt,
+            user.updatedAt
+        ));
     }
 }
