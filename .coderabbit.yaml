@@ -1,17 +1,4 @@
-# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
-language: "en-US"
-early_access: false
 reviews:
-  base_branch: "dev"
-  profile: "chill"
-  request_changes_workflow: false
-  high_level_summary: true
-  poem: true
-  review_status: true
-  collapse_walkthrough: false
   auto_review:
-    enabled: true
-    drafts: false
-chat:
-  auto_reply: true
-  auto_reply_message: "I'm currently busy, but I'll get back to you soon."
+    base_branches:
+      - dev

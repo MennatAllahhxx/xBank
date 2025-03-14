@@ -13,6 +13,6 @@ export class UserOrmEntity extends BaseOrmEntity implements User {
     @Column({ type: 'varchar', unique: true, length: 100 })
     email!: string;
 
-    @Column({ type: 'varchar', select: false, length: 100 })
+    @Column({ type: 'varchar', length: 100 })
     password!: string;
 }
