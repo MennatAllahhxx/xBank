@@ -24,8 +24,9 @@ export class UserController {
         } catch (err: any) {
             if (err.message === 'Email already exists' 
                 || err.message === 'Password must be at least 8 characters long' 
-                || err.message === 'Invalid email format') {
-                    res.status(400).json({ message: err.message });
+                || err.message === 'Invalid email format'
+            ) {
+                res.status(400).json({ message: err.message });
             } else {
                 res.status(500).json({ message: 'Internal server error' });
             }
