@@ -10,6 +10,7 @@ export class UserTypeOrmRepository implements UserRepository {
     constructor(private dataSource: DataSource) {
         this.repo = this.dataSource.getRepository(UserOrmEntity);
     }
+
     async createUser(user: User): Promise<User> {
         const ormUser = new UserOrmEntity();
         ormUser.name = user.name;
@@ -28,5 +29,51 @@ export class UserTypeOrmRepository implements UserRepository {
         );
     }
 
+    async updateUser(id: string, name?: string, email?: string, password?: string): Promise<User | null> {
+        const user: UserOrmEntity | null = await this.repo.findOneBy({id});
 
+        if (user) {
+            if (name) user.name = name;
+            if (email) user.email = email;
+            if (password) user.password = password;
+            this.repo.save(user);
+        }        
+
+        return user;
+    }
+
+    async getUserById(id: string): Promise<User | null> {
+        const user = await this.repo.findOneBy({id});
+        if (user) {
+            return new User(
+                user.name,
+                user.email,
+                user.password,
+                user.id,
+                user.createdAt,
+                user.updatedAt
+            );
+        }
+        return null;
+    }
+
+    async getAllUsers(): Promise<Array<User>> {
+        const users = await this.repo.find();
+        const foundUsers: Array<User> = [];
+        if (users) {
+            
+            users.forEach(user => {
+                foundUsers.push(new User(
+                    user.name,
+                    user.email,
+                    user.password,
+                    user.id,
+                    user.createdAt,
+                    user.updatedAt
+                ));
+            });
+        }
+
+        return foundUsers;
+    }
 }

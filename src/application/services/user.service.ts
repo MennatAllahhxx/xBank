@@ -13,4 +13,22 @@ export class UserService {
         );
         return this.userRepo.createUser(user);
     }
+
+    async updateUser(id: string, name?: string, email?: string, password?: string) {
+
+        return this.userRepo.updateUser(
+            id,
+            name,
+            email,
+            password?await hash(password, 8):undefined
+        );
+    }
+
+    async getUserById(id: string) {
+        return this.userRepo.getUserById(id);
+    }
+
+    async getAllUsers() {
+        return this.userRepo.getAllUsers();
+    }
 }
