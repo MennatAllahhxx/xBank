@@ -20,6 +20,8 @@ export class UserService {
     }
     
     async createUser(name: string, email: string, password: string) {
+        await this.validateEmail(email);
+        
         const userExists = await this.userRepo.getUserByEmail(email);
         if (userExists) {
             throw Error('Email already exists');
@@ -49,7 +51,7 @@ export class UserService {
             id,
             name,
             email,
-            password?await hash(password, 8):undefined
+            password ? await hash(password, 8) : undefined
         );
     }
 
