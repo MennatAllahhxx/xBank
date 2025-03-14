@@ -76,7 +76,7 @@ export class UserService {
         const payload = {
             id: (user as any).id,
             email: user.email,
-            iat: Date.now()/1000
+            iat: Math.floor(Date.now()/1000)
         }
         const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
             expiresIn: '10d'

@@ -70,6 +70,7 @@ export class UserController {
             const {email, password} = req.body;
             if (!email || !password) {
                 res.status(400).json({ message: "Email and password are required" });
+                return;
             }
 
             const { token, userWithoutPassword } = await this.userService.generateAccessToken(email, password);
