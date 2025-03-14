@@ -1,6 +1,5 @@
 import { BaseEntity } from './base.entity.js';
 import { IsEmail, Length } from 'class-validator';
-import { hash } from 'bcryptjs';
 
 export class User extends BaseEntity {
     @Length(3, 255)
@@ -28,9 +27,5 @@ export class User extends BaseEntity {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-    }
-
-    async hashPassword(): Promise<void> {
-        this.password = await hash(this.password, 8);
     }
 }
