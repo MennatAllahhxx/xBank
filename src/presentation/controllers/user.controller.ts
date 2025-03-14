@@ -17,10 +17,18 @@ export class UserController {
                 res.status(400).json({ message: "name, email and password are all required" });
             } else {
                 const user: User = await this.userService.createUser(name, email, password);
-                res.status(201).json(user);
+
+                const {password: _, ...userWithoutPassword} = user;
+                res.status(201).json(userWithoutPassword);
             }
         } catch (err: any) {
-            res.status(500).json({ message: err.message });
+            if (err.message === 'Email already exists' 
+                || err.message === 'Password must be at least 8 characters long' 
+                || err.message === 'Invalid email format') {
+                    res.status(400).json({ message: err.message });
+            } else {
+                res.status(500).json({ message: 'Internal server error' });
+            }
         }
     }
 
@@ -41,21 +49,29 @@ export class UserController {
             if (!savedUser) {
                 res.status(404).json({ message: "User not found" });
             } else{
-                res.status(201).json(savedUser);
+                const {password:_, ...userWithoutPassword} = savedUser;
+                res.status(201).json(userWithoutPassword);
             }
         } catch (err: any) {
-            res.status(500).json({ message: err.message });
+            if (err.message === 'Email is already used' 
+                || err.message === 'Password must be at least 8 characters long' 
+                || err.message === 'Invalid email format') {
+                    res.status(400).json({ message: err.message });
+                } else {
+                    res.status(500).json({ message: 'Internal server error' });
+                }
         }
     }
 
-    getUserById = async (req:Request, res: Response) => {
+    getUserById = async (req: Request, res: Response) => {
         try {
             const user: User | null = await this.userService.getUserById(req.params.id);
             
             if (!user) {
                 res.status(404).json({ message: "User not found" });
             } else {
-                res.status(200).json(user);
+                const {password:_, ...userWithoutPassword} = user;
+                res.status(200).json(userWithoutPassword);
             }
         } catch (err: any) {
             res.status(401).json({ message: err.message });
@@ -69,20 +85,28 @@ export class UserController {
             if (!user) {
                 res.status(404).json({ message: "User not found" });
             } else {
-                res.status(200).json(user);
+                const {password: _, ...userWithoutPassword} = user;
+                res.status(200).json(userWithoutPassword);
             }
         } catch (err: any) {
-            res.status(401).json({ message: err.message });
+            res.status(500).json({ message: 'Internal server error' });
         }
     }
 
     getAllUsers = async (req:Request, res: Response) => {
         try {
-            const users: Array<User> = await this.userService.getAllUsers();
+            const page = req.query.page ? parseInt(req.query.page as string) : 1;
+            const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+            const users: Array<User> = await this.userService.getAllUsers(page, limit);
 
-            res.status(200).json(users);
+            const usersWithoutPassword = users.map(user => {
+                const {password: _, ...userWithoutPassword} = user;
+                return userWithoutPassword;
+            });
+
+            res.status(200).json(usersWithoutPassword);
         } catch (err: any) {
-            res.status(400).json({message: err.message});
+            res.status(500).json({ message: 'Internal server error' });
         }
     }
 }

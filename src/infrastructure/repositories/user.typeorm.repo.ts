@@ -38,7 +38,14 @@ export class UserTypeOrmRepository implements UserRepository {
         if (password) user.password = password;
         await this.repo.save(user);
 
-        return user;
+        return new User(
+            user.name,
+            user.email,
+            user.password,
+            user.id,
+            user.createdAt,
+            user.updatedAt
+        );
     }
 
     async getUserById(id: string): Promise<User | null> {
@@ -71,8 +78,11 @@ export class UserTypeOrmRepository implements UserRepository {
         return null;
     }
 
-    async getAllUsers(): Promise<Array<User>> {
-        const users = await this.repo.find();
+    async getAllUsers(page: number, limit: number): Promise<Array<User>> {
+        const users = await this.repo.find({
+            skip: (page - 1) * limit,
+            take: limit
+        });
 
         return users.map(user => new User(
             user.name,

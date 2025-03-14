@@ -29,4 +29,8 @@ export class User extends BaseEntity {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+    async hashPassword(): Promise<void> {
+        this.password = await hash(this.password, 8);
+    }
 }

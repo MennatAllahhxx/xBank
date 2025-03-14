@@ -6,6 +6,19 @@ import { IsEmail, validate } from "class-validator";
 export class UserService {
     constructor(private readonly userRepo: UserRepository){}
 
+    private async validateEmail(email: string): Promise<void> {
+        class EmailValidtor {
+            @IsEmail()
+            tempEmail: string;
+
+            constructor(tempEmail: string) { this.tempEmail = tempEmail; }
+        }
+        const validateEmail = new EmailValidtor(email);
+        const errs = await validate(validateEmail);
+
+        if (errs.length) throw Error('Invalid email format');
+    }
+    
     async createUser(name: string, email: string, password: string) {
         const userExists = await this.userRepo.getUserByEmail(email);
         if (userExists) {
@@ -26,17 +39,8 @@ export class UserService {
         if(email) {
             const emailExists = await this.getUserByEmail(email);
             if (emailExists) throw Error('Email is already used');
-
-            class EmailValidtor {
-                @IsEmail()
-                tempEmail: string;
-
-                constructor(tempEmail: string) { this.tempEmail = tempEmail; }
-            }
-            const validateEmail = new EmailValidtor(email);
-            const errs = await validate(validateEmail);
-
-            if (errs.length) throw Error('Invalid email format');
+            
+            await this.validateEmail(email);
         }
 
         if (password && password.length < 8) throw Error('Password must be at least 8 characters long');
@@ -57,7 +61,7 @@ export class UserService {
         return this.userRepo.getUserByEmail(email);
     }
 
-    async getAllUsers() {
-        return this.userRepo.getAllUsers();
+    async getAllUsers(page: number, limit: number) {
+        return this.userRepo.getAllUsers(page, limit);
     }
 }
