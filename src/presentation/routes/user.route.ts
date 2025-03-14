@@ -13,6 +13,7 @@ const userController = new UserController(userService);
 UserRouter.post('/user', userController.createUser);
 UserRouter.put('/user/:id', userController.updateUser);
 UserRouter.get('/user/:id', userController.getUserById);
+UserRouter.get('/user', userController.getUserByEmail);
 UserRouter.get('/users', userController.getAllUsers);
 
 export default UserRouter;

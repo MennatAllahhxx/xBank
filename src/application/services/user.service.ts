@@ -28,6 +28,10 @@ export class UserService {
         return this.userRepo.getUserById(id);
     }
 
+    async getUserByEmail(email: string) {
+        return this.userRepo.getUserByEmail(email);
+    }
+
     async getAllUsers() {
         return this.userRepo.getAllUsers();
     }

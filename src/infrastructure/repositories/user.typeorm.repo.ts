@@ -57,6 +57,21 @@ export class UserTypeOrmRepository implements UserRepository {
         return null;
     }
 
+    async getUserByEmail(email: string): Promise<User | null> {
+        const user = await this.repo.findOneBy({email});
+        if (user) {
+            return new User(
+                user.name,
+                user.email,
+                user.password,
+                user.id,
+                user.createdAt,
+                user.updatedAt
+            );
+        }
+        return null;
+    }
+
     async getAllUsers(): Promise<Array<User>> {
         const users = await this.repo.find();
         const foundUsers: Array<User> = [];

@@ -49,6 +49,16 @@ export class UserController {
         }
     }
 
+    getUserByEmail = async (req:Request, res: Response) => {
+        try {
+            const user: User | null = await this.userService.getUserByEmail(req.body.email);
+            
+            res.status(200).json(user);
+        } catch (err: any) {
+            res.status(401).json({ message: err.message });
+        }
+    }
+
     getAllUsers = async (req:Request, res: Response) => {
         try {
             const users: Array<User> = await this.userService.getAllUsers();
