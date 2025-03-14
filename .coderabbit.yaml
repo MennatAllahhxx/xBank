@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
-branches: ["dev"]  # 👈 Add this line
 language: "en-US"
 early_access: false
 reviews:
+  base_branch: "dev"
   profile: "chill"
   request_changes_workflow: false
   high_level_summary: true
