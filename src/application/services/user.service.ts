@@ -1,7 +1,8 @@
 import { UserRepository } from "../../core/interfaces/user.repo.interface.js";
 import { User } from "../../core/entities/user.entity.js";
-import { hash } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import { IsEmail, validate } from "class-validator";
+import jwt from "jsonwebtoken";
 
 export class UserService {
     constructor(private readonly userRepo: UserRepository){}
@@ -61,6 +62,18 @@ export class UserService {
 
     async getUserByEmail(email: string) {
         return this.userRepo.getUserByEmail(email);
+    }
+
+    async generateAccessToken(email: string, password: string) {
+        const user: User | null = await  this.userRepo.getUserByEmail(email);
+        if (!user) throw new Error('Email is not registered');
+
+        const isMatchedPassword = await compare(password, user.password);
+        if (!isMatchedPassword) throw Error('Invalid password');
+
+        const token = jwt.sign((user as any).id.toString(), process.env.JWT_SECRET as string);
+
+        return { token, user };
     }
 
     async getAllUsers(page: number, limit: number) {
