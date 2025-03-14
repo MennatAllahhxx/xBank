@@ -2,7 +2,7 @@
 language: "en-US"
 early_access: false
 reviews:
-  base_branch: "dev"
+  base_branches: ["dev"]
   profile: "chill"
   request_changes_workflow: false
   high_level_summary: true
