@@ -63,18 +63,3 @@ export const isAuthorized = (roles: UserRole[]) => {
         }
     }
 }
-
-// export const isAuthorized = (
-//         req: AuthRequest, 
-//         res: Response, 
-//         next: NextFunction,
-//         roles: UserRole[]
-//     ) => {
-//         try {
-//             if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
-//             else if (roles.includes(req.user.role)) return res.status(403).json({ message: 'Forbidden resource' });
-//             else next();
-//         } catch (err) {
-//             res.status(500).json({ message: 'Internal server error' });
-//         }
-//     }
