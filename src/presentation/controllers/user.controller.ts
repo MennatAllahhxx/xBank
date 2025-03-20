@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "../../application/services/user.service.js";
-import { User } from "../../core/entities/user.entity.js";
+import { User, UserRole } from "../../core/entities/user.entity.js";
 import { AuthRequest } from "../types/auth.types.js";
 
 export class UserController {
@@ -34,12 +34,43 @@ export class UserController {
         }
     }
 
-    updateUser = async (req:Request, res: Response) => {
+    updateUser = async (req: Request, res: Response) => {
         try {
             const name: string | undefined = req.body?.name;
             const email: string | undefined = req.body?.email;
             const password: string | undefined = req.body?.password;
             const id: string = req.params.id;
+
+            const savedUser: User | null = await this.userService.updateUser(
+                id,
+                name,
+                email,
+                password
+            );
+            
+            if (!savedUser) {
+                res.status(404).json({ message: "User not found" });
+            } else{
+                const {password:_, ...userWithoutPassword} = savedUser;
+                res.status(201).json(userWithoutPassword);
+            }
+        } catch (err: any) {
+            if (err.message === 'Email is already used' 
+                || err.message === 'Password must be at least 8 characters long' 
+                || err.message === 'Invalid email format') {
+                    res.status(400).json({ message: err.message });
+                } else {
+                    res.status(500).json({ message: 'Internal server error' });
+                }
+        }
+    }
+
+    updateUserProfile = async (req: AuthRequest, res: Response) => {
+        try {
+            const name: string | undefined = req.body?.name;
+            const email: string | undefined = req.body?.email;
+            const password: string | undefined = req.body?.password;
+            const id: string = req.user?.id as string;
 
             const savedUser: User | null = await this.userService.updateUser(
                 id,
@@ -118,7 +149,7 @@ export class UserController {
         }
     }
 
-    getUserByEmail = async (req:Request, res: Response) => {
+    getUserByEmail = async (req: Request, res: Response) => {
         try {
             const user: User | null = await this.userService.getUserByEmail(req.params.email);
             
@@ -133,7 +164,7 @@ export class UserController {
         }
     }
 
-    getAllUsers = async (req:Request, res: Response) => {
+    getAllUsers = async (req: Request, res: Response) => {
         try {
             const page = req.query.page ? parseInt(req.query.page as string) : 1;
             const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
@@ -145,6 +176,34 @@ export class UserController {
             });
 
             res.status(200).json(usersWithoutPassword);
+        } catch (err: any) {
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    getAllUsersByRole = async (req: Request, res: Response) => {
+        try {
+            const users: Array<User> = await this.userService.getAllUsersByRole(req.params.role as UserRole);
+
+            const usersWithoutPassword = users.map(user => {
+                const {password: _, ...userWithoutPassword} = user;
+                return userWithoutPassword;
+            });
+
+            res.status(200).json(usersWithoutPassword);
+        } catch (err: any) {
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    deleteUser = async (req: Request, res: Response) => {
+        try {
+            const deletedResult = await this.userService.deleteUser(req.params.id);
+            if (deletedResult.affected === 0) {
+                res.status(404).json({ message: "User not found" });
+            } else {
+                res.status(200).json({ message: "User deleted successfully" });
+            }
         } catch (err: any) {
             res.status(500).json({ message: 'Internal server error' });
         }
