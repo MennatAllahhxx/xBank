@@ -1,10 +1,12 @@
 import { Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken'
 import { AuthRequest } from "../types/auth.types.js";
+import { UserRole } from "../../core/entities/user.entity.js";
 
 interface JwtPayload {
     id: string;
     email: string;
+    role: UserRole;
     iat: number;
 }
 
@@ -32,7 +34,7 @@ export const authMiddleware = (
             return;
         }
 
-        req.user = { id: decoded.id, email: decoded.email };
+        req.user = { id: decoded.id, email: decoded.email, role: decoded.role };
         next();
     } catch (err: any) {
         if (err.message === 'jwt expired' || err.message === 'invalid token') {
@@ -44,4 +46,27 @@ export const authMiddleware = (
         }
     }
     
+}
+
+export const isAuthorized = (roles: UserRole[]) => {
+    return async (
+        req: AuthRequest, 
+        res: Response, 
+        next: NextFunction
+    ): Promise<void> => {
+        try {
+            if (!req.user) {
+                res.status(401).json({ message: 'Unauthorized' });
+                return;
+            }
+            else if (!roles.includes(req.user.role)) {
+                res.status(403).json({ message: 'Forbidden resource' });
+                return;
+            }
+            else next();
+        } catch (err) {
+            res.status(500).json({ message: 'Internal server error' });
+            return;
+        }
+    }
 }

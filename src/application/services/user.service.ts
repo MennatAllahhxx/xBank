@@ -1,5 +1,5 @@
 import { UserRepository } from "../../core/interfaces/user.repo.interface.js";
-import { User } from "../../core/entities/user.entity.js";
+import { User, UserRole } from "../../core/entities/user.entity.js";
 import { compare, hash } from "bcryptjs";
 import { IsEmail, validate } from "class-validator";
 import jwt from "jsonwebtoken";
@@ -76,6 +76,7 @@ export class UserService {
         const payload = {
             id: (user as any).id,
             email: user.email,
+            role: user.role,
             iat: Math.floor(Date.now()/1000)
         }
         const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
@@ -89,5 +90,13 @@ export class UserService {
 
     async getAllUsers(page: number, limit: number) {
         return this.userRepo.getAllUsers(page, limit);
+    }
+
+    async getAllUsersByRole(role: UserRole) {
+        return this.userRepo.getAllUsersByRole(role);
+    }
+
+    async deleteUser(id: string) {
+        return this.userRepo.deleteUser(id);
     }
 }

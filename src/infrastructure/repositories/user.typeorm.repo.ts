@@ -1,5 +1,5 @@
-import { DataSource } from "typeorm";
-import { User } from "../../core/entities/user.entity.js";
+import { DataSource, DeleteResult } from "typeorm";
+import { User, UserRole } from "../../core/entities/user.entity.js";
 import { UserRepository } from "../../core/interfaces/user.repo.interface.js";
 import { UserOrmEntity } from "../entities/user.orm-entity.js";
 import { inject, injectable } from "tsyringe";
@@ -24,6 +24,7 @@ export class UserTypeOrmRepository implements UserRepository {
             savedUser.name,
             savedUser.email,
             savedUser.password,
+            savedUser.role,
             savedUser.id,
             savedUser.createdAt,
             savedUser.updatedAt
@@ -43,6 +44,7 @@ export class UserTypeOrmRepository implements UserRepository {
             user.name,
             user.email,
             user.password,
+            user.role,
             user.id,
             user.createdAt,
             user.updatedAt
@@ -56,6 +58,7 @@ export class UserTypeOrmRepository implements UserRepository {
                 user.name,
                 user.email,
                 user.password,
+                user.role,
                 user.id,
                 user.createdAt,
                 user.updatedAt
@@ -71,6 +74,7 @@ export class UserTypeOrmRepository implements UserRepository {
                 user.name,
                 user.email,
                 user.password,
+                user.role,
                 user.id,
                 user.createdAt,
                 user.updatedAt
@@ -89,9 +93,28 @@ export class UserTypeOrmRepository implements UserRepository {
             user.name,
             user.email,
             user.password,
+            user.role,
             user.id,
             user.createdAt,
             user.updatedAt
         ));
+    }
+
+    async getAllUsersByRole(role: UserRole): Promise<Array<User>> {
+        const users = await this.repo.findBy({role});
+
+        return users.map(user => new User(
+            user.name,
+            user.email,
+            user.password,
+            user.role,
+            user.id,
+            user.createdAt,
+            user.updatedAt
+        ));
+    }
+
+    async deleteUser(id: string): Promise<DeleteResult> {
+        return await this.repo.delete(id);
     }
 }
