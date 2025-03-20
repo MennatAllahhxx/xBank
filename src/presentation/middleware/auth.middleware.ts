@@ -66,6 +66,7 @@ export const isAuthorized = (roles: UserRole[]) => {
             else next();
         } catch (err) {
             res.status(500).json({ message: 'Internal server error' });
+            return;
         }
     }
 }
