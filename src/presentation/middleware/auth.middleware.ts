@@ -55,8 +55,14 @@ export const isAuthorized = (roles: UserRole[]) => {
         next: NextFunction
     ): Promise<void> => {
         try {
-            if (!req.user) res.status(401).json({ message: 'Unauthorized' });
-            else if (!roles.includes(req.user.role)) res.status(403).json({ message: 'Forbidden resource' });
+            if (!req.user) {
+                res.status(401).json({ message: 'Unauthorized' });
+                return;
+            }
+            else if (!roles.includes(req.user.role)) {
+                res.status(403).json({ message: 'Forbidden resource' });
+                return;
+            }
             else next();
         } catch (err) {
             res.status(500).json({ message: 'Internal server error' });
