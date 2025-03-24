@@ -13,21 +13,22 @@ export class UserTypeOrmRepository implements UserRepository {
     }
 
     async createUser(user: User): Promise<User> {
-        const ormUser = new UserOrmEntity();
-        ormUser.name = user.name;
-        ormUser.email = user.email;
-        ormUser.password = user.password
+        const orm_user = new UserOrmEntity();
+        orm_user.name = user.name;
+        orm_user.email = user.email;
+        orm_user.password = user.password
+        orm_user.role = user.role;
 
-        const savedUser = await this.repo.save(ormUser);
+        const saved_user = await this.repo.save(orm_user);
 
         return new User(
-            savedUser.name,
-            savedUser.email,
-            savedUser.password,
-            savedUser.role,
-            savedUser.id,
-            savedUser.createdAt,
-            savedUser.updatedAt
+            saved_user.name,
+            saved_user.email,
+            saved_user.password,
+            saved_user.role,
+            saved_user.id,
+            saved_user.created_at,
+            saved_user.updated_at
         );
     }
 
@@ -46,8 +47,8 @@ export class UserTypeOrmRepository implements UserRepository {
             user.password,
             user.role,
             user.id,
-            user.createdAt,
-            user.updatedAt
+            user.created_at,
+            user.updated_at
         );
     }
 
@@ -60,8 +61,8 @@ export class UserTypeOrmRepository implements UserRepository {
                 user.password,
                 user.role,
                 user.id,
-                user.createdAt,
-                user.updatedAt
+                user.created_at,
+                user.updated_at
             );
         }
         return null;
@@ -76,8 +77,8 @@ export class UserTypeOrmRepository implements UserRepository {
                 user.password,
                 user.role,
                 user.id,
-                user.createdAt,
-                user.updatedAt
+                user.created_at,
+                user.updated_at
             );
         }
         return null;
@@ -95,8 +96,8 @@ export class UserTypeOrmRepository implements UserRepository {
             user.password,
             user.role,
             user.id,
-            user.createdAt,
-            user.updatedAt
+            user.created_at,
+            user.updated_at
         ));
     }
 
@@ -109,8 +110,8 @@ export class UserTypeOrmRepository implements UserRepository {
             user.password,
             user.role,
             user.id,
-            user.createdAt,
-            user.updatedAt
+            user.created_at,
+            user.updated_at
         ));
     }
 
