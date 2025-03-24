@@ -17,6 +17,7 @@ export class UserTypeOrmRepository implements UserRepository {
         orm_user.name = user.name;
         orm_user.email = user.email;
         orm_user.password = user.password
+        orm_user.role = user.role;
 
         const saved_user = await this.repo.save(orm_user);
 
@@ -26,8 +27,8 @@ export class UserTypeOrmRepository implements UserRepository {
             saved_user.password,
             saved_user.role,
             saved_user.id,
-            saved_user.createdAt,
-            saved_user.updatedAt
+            saved_user.created_at,
+            saved_user.updated_at
         );
     }
 
@@ -46,8 +47,8 @@ export class UserTypeOrmRepository implements UserRepository {
             user.password,
             user.role,
             user.id,
-            user.createdAt,
-            user.updatedAt
+            user.created_at,
+            user.updated_at
         );
     }
 
@@ -60,8 +61,8 @@ export class UserTypeOrmRepository implements UserRepository {
                 user.password,
                 user.role,
                 user.id,
-                user.createdAt,
-                user.updatedAt
+                user.created_at,
+                user.updated_at
             );
         }
         return null;
@@ -76,8 +77,8 @@ export class UserTypeOrmRepository implements UserRepository {
                 user.password,
                 user.role,
                 user.id,
-                user.createdAt,
-                user.updatedAt
+                user.created_at,
+                user.updated_at
             );
         }
         return null;
@@ -95,8 +96,8 @@ export class UserTypeOrmRepository implements UserRepository {
             user.password,
             user.role,
             user.id,
-            user.createdAt,
-            user.updatedAt
+            user.created_at,
+            user.updated_at
         ));
     }
 
@@ -109,8 +110,8 @@ export class UserTypeOrmRepository implements UserRepository {
             user.password,
             user.role,
             user.id,
-            user.createdAt,
-            user.updatedAt
+            user.created_at,
+            user.updated_at
         ));
     }
 

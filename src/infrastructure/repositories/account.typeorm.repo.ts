@@ -15,32 +15,32 @@ export class AccountTypeOrmRepository implements AccountRepository {
     async createAccount(account: Account): Promise<Account> {
         const orm_acc = new AccountOrmEntity();
 
-        orm_acc.userId = account.userId;
+        orm_acc.user_id = account.user_id;
         orm_acc.balance = account.balance;
-        orm_acc.accountType = account.accountType;
+        orm_acc.account_type = account.account_type;
 
         const saved_acc = await this.repo.save(orm_acc);
 
         return new Account(
-            saved_acc.userId,
-            saved_acc.accountType,
+            saved_acc.user_id,
+            saved_acc.account_type,
             saved_acc.balance,
             saved_acc.id,
-            saved_acc.createdAt,
-            saved_acc.updatedAt
+            saved_acc.created_at,
+            saved_acc.updated_at
         );
     }
 
-    async getAccountsByUserId(userId: string): Promise<Array<Account>> {
-        const accounts = await this.repo.findBy({userId});
+    async getAccountsByUserId(user_id: string): Promise<Array<Account>> {
+        const accounts = await this.repo.findBy({user_id});
 
         return accounts.map(acc => new Account(
-            acc.userId,
-            acc.accountType,
+            acc.user_id,
+            acc.account_type,
             acc.balance,
             acc.id,
-            acc.createdAt,
-            acc.updatedAt
+            acc.created_at,
+            acc.updated_at
         ))
     }
 }

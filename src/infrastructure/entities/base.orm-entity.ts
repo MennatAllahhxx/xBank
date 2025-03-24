@@ -10,8 +10,8 @@ export abstract class BaseOrmEntity extends BaseEntity {
     declare id: string;
 
     @CreateDateColumn({ type: 'timestamptz' })
-    declare createdAt: Date;
+    declare created_at: Date;
 
     @UpdateDateColumn({ type: 'timestamptz' })
-    declare updatedAt: Date;
+    declare updated_at: Date;
 }

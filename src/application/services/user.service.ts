@@ -5,14 +5,14 @@ import { IsEmail, validate } from "class-validator";
 import jwt from "jsonwebtoken";
 
 export class UserService {
-    constructor(private readonly userRepo: UserRepository){}
+    constructor(private readonly user_repo: UserRepository){}
 
     private async validateEmail(email: string): Promise<void> {
         class EmailValidtor {
             @IsEmail()
-            tempEmail: string;
+            temp_email: string;
 
-            constructor(tempEmail: string) { this.tempEmail = tempEmail; }
+            constructor(temp_email: string) { this.temp_email = temp_email; }
         }
         const validateEmail = new EmailValidtor(email);
         const errs = await validate(validateEmail);
@@ -20,11 +20,11 @@ export class UserService {
         if (errs.length) throw Error('Invalid email format');
     }
     
-    async createUser(name: string, email: string, password: string) {
+    async createUser(name: string, email: string, password: string, role: UserRole) {
         await this.validateEmail(email);
         
-        const userExists = await this.userRepo.getUserByEmail(email);
-        if (userExists) {
+        const user_exists = await this.user_repo.getUserByEmail(email);
+        if (user_exists) {
             throw Error('Email already exists');
         }
 
@@ -33,22 +33,23 @@ export class UserService {
         const user = new User(
             name,
             email,
-            await hash(password, 8)
+            await hash(password, 8),
+            role
         );
-        return this.userRepo.createUser(user);
+        return this.user_repo.createUser(user);
     }
 
     async updateUser(id: string, name?: string, email?: string, password?: string) {
         if(email) {
-            const emailExists = await this.getUserByEmail(email);
-            if (emailExists) throw Error('Email is already used');
+            const email_exists = await this.getUserByEmail(email);
+            if (email_exists) throw Error('Email is already used');
             
             await this.validateEmail(email);
         }
 
         if (password && password.length < 8) throw Error('Password must be at least 8 characters long');
 
-        return this.userRepo.updateUser(
+        return this.user_repo.updateUser(
             id,
             name,
             email,
@@ -57,17 +58,17 @@ export class UserService {
     }
 
     async getUserById(id: string) {
-        return this.userRepo.getUserById(id);
+        return this.user_repo.getUserById(id);
     }
 
     async getUserByEmail(email: string) {
-        return this.userRepo.getUserByEmail(email);
+        return this.user_repo.getUserByEmail(email);
     }
 
     async generateAccessToken(email: string, password: string) {
         if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not defined');
 
-        const user: User | null = await this.userRepo.getUserByEmail(email);
+        const user: User | null = await this.user_repo.getUserByEmail(email);
         if (!user) throw new Error('Email is not registered');
 
         const isMatchedPassword = await compare(password, user.password);
@@ -83,20 +84,20 @@ export class UserService {
             expiresIn: '10d'
         });
 
-        const { password: _, ...userWithoutPassword } = user;
+        const { password: _, ...user_without_password } = user;
 
-        return { token, userWithoutPassword };
+        return { token, user_without_password };
     }
 
     async getAllUsers(page: number, limit: number) {
-        return this.userRepo.getAllUsers(page, limit);
+        return this.user_repo.getAllUsers(page, limit);
     }
 
     async getAllUsersByRole(role: UserRole) {
-        return this.userRepo.getAllUsersByRole(role);
+        return this.user_repo.getAllUsersByRole(role);
     }
 
     async deleteUser(id: string) {
-        return this.userRepo.deleteUser(id);
+        return this.user_repo.deleteUser(id);
     }
 }

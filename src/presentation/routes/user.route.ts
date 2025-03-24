@@ -16,6 +16,12 @@ UserRouter.post('/auth/register', userController.createUser.bind(userController)
 UserRouter.post('/auth/login', userController.login.bind(userController));
 
 // Admin routes
+UserRouter.post(
+    '/users', 
+    authMiddleware,
+    isAuthorized([UserRole.ADMIN]),
+    userController.createUser.bind(userController)
+);
 UserRouter.put(
     '/user/:id', 
     authMiddleware,

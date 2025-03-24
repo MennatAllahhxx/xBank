@@ -4,12 +4,12 @@ import { Account, AccountType } from "../../core/entities/account.entity.js";
 
 @Entity()
 export class AccountOrmEntity extends BaseOrmEntity implements Account {
-    @Column({ type: 'varchar', length: 100 })
-    accountType!: AccountType;
+    @Column({ type: 'varchar', length: 100, default: AccountType.CURRENT })
+    account_type!: AccountType;
 
     @Column({ type: 'double precision'})
     balance!: number;
 
     @Column({ type: 'uuid' })
-    userId!: string;
+    user_id!: string;
 }

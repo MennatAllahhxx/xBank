@@ -10,17 +10,25 @@ export class AccountController {
     createAccount = async (req: Request, res: Response) => {
         try {
             const user_id: string = req.body.user_id;
-            const account_type: AccountType = req.body.account_type;
+            const account_type = req.body.account_type;
             const balance: number = req.body.balance;
 
-            if (!user_id || !account_type || !balance) {
+            if (!user_id || !account_type|| (balance === undefined || balance === null)) {
                 res.status(400).json({
                     message: "user_id, account_type and initial blance are all required to create an account"
+                });                
+                return;
+            }
+
+            if (!Object.values(AccountType).includes(account_type)) {
+                res.status(400).json({
+                    message: `Invalid account type. Valid options are: ${Object.values(AccountType).join(', ')}`,
                 });
                 return;
             }
 
-            const account: Account = await this.account_service.createAccount(account_type, user_id, balance);
+            const account: Account = await this.account_service.createAccount(account_type as AccountType, user_id, balance);
+
             res.status(201).json(account);
         } catch (err) {
             res.status(500).json({
@@ -32,7 +40,6 @@ export class AccountController {
     getAccountsByUserId = async (req: Request, res: Response) => {
         try {
             const user_id: string = req.params.userId;
-
             const accounts: Array<Account> = await this.account_service.getAccountsByUserId(user_id);
 
             res.status(200).json(accounts);

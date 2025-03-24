@@ -26,16 +26,16 @@ export class User extends BaseEntity {
         password: string,
         role?: UserRole,
         id?: string,
-        createdAt?: Date,
-        updatedAt?: Date
+        created_at?: Date,
+        updated_at?: Date
     ) {
         super();
         this.name = name;
         this.email = email;
         this.password = password;
         this.id = id;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
         this.role = role? role : UserRole.USER;
     }
 }

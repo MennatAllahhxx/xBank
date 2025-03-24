@@ -1,4 +1,3 @@
-import { Min } from "class-validator";
 import { BaseEntity } from "./base.entity.js";
 
 export enum AccountType {
@@ -7,26 +6,26 @@ export enum AccountType {
 }
 
 export class Account extends BaseEntity {
-    userId: string;
+    user_id: string;
 
-    accountType: AccountType;
+    account_type: AccountType;
 
     balance: number;
 
     constructor(
-        userId: string,
-        accountType: AccountType,
+        user_id: string,
+        account_type: AccountType,
         balance: number,
         id?: string,
-        createdAt?: Date,
-        updatedAt?: Date
+        created_at?: Date,
+        updated_at?: Date
     ) {
         super();
-        this.userId = userId;
-        this.accountType = accountType;
+        this.user_id = user_id;
+        this.account_type = account_type;
         this.balance = balance;
         this.id = id;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 }
