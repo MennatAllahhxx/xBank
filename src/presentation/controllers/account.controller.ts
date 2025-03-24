@@ -30,7 +30,13 @@ export class AccountController {
             const account: Account = await this.account_service.createAccount(account_type as AccountType, user_id, balance);
 
             res.status(201).json(account);
-        } catch (err) {
+        } catch (err: any) {
+            if (err.message === 'User does not exist') {
+                res.status(404).json({
+                    message: 'User does not exist'
+                });
+                return;
+            }
             res.status(500).json({
                 message: 'Internal server error'
             });
@@ -43,7 +49,13 @@ export class AccountController {
             const accounts: Array<Account> = await this.account_service.getAccountsByUserId(user_id);
 
             res.status(200).json(accounts);
-        } catch (err) {
+        } catch (err: any) {
+            if (err.message === 'User does not exist') {
+                res.status(404).json({
+                    message: 'User does not exist'
+                });
+                return;
+            }
             res.status(500).json({
                 message: 'Internal server error'
             });

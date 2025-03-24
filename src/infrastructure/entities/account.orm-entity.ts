@@ -1,6 +1,7 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany } from "typeorm";
 import { BaseOrmEntity } from "./base.orm-entity.js";
 import { Account, AccountType } from "../../core/entities/account.entity.js";
+import { UserOrmEntity } from "./user.orm-entity.js";
 
 @Entity()
 export class AccountOrmEntity extends BaseOrmEntity implements Account {
@@ -11,5 +12,7 @@ export class AccountOrmEntity extends BaseOrmEntity implements Account {
     balance!: number;
 
     @Column({ type: 'uuid' })
+    @ManyToMany(() => UserOrmEntity, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'user_id' })
     user_id!: string;
 }
