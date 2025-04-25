@@ -8,8 +8,8 @@ import { Account } from "../../core/entities/account.entity.js";
 export class AccountTypeOrmRepository implements AccountRepository {
     private repo;
 
-    constructor(@inject(DataSource) private dataSource: DataSource) {
-        this.repo = this.dataSource.getRepository(AccountOrmEntity);
+    constructor(@inject(DataSource) private data_source: DataSource) {
+        this.repo = this.data_source.getRepository(AccountOrmEntity);
     }
 
     async createAccount(account: Account): Promise<Account> {
@@ -42,5 +42,40 @@ export class AccountTypeOrmRepository implements AccountRepository {
             acc.created_at,
             acc.updated_at
         ))
+    }
+
+    async getAccountById(id: string): Promise<Account | null> {
+        const account = await this.repo.findOneBy({id});
+
+        if (account) {
+            return new Account(
+                account.user_id,
+                account.account_type,
+                account.balance,
+                account.id,
+                account.created_at,
+                account.updated_at
+            );
+        }
+        return null;
+    }
+
+    async updateAccountBalance(id: string, balance: number): Promise<Account | null> {
+        const account = await this.repo.findOneBy({id});
+
+        if (account) {            
+            account.balance = Number(account.balance) + balance;
+            const updated_acc = await this.repo.save(account);
+
+            return new Account(
+                updated_acc.user_id,
+                updated_acc.account_type,
+                updated_acc.balance,
+                updated_acc.id,
+                updated_acc.created_at,
+                updated_acc.updated_at
+            );
+        }
+        return null;
     }
 }
