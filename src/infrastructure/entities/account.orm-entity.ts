@@ -8,7 +8,7 @@ export class AccountOrmEntity extends BaseOrmEntity implements Account {
     @Column({ type: 'varchar', length: 100, default: AccountType.CURRENT })
     account_type!: AccountType;
 
-    @Column({ type: 'double precision'})
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
     balance!: number;
 
     @Column({ type: 'uuid' })
