@@ -61,9 +61,12 @@ export class AccountTypeOrmRepository implements AccountRepository {
     }
 
     async updateAccountBalance(id: string, balance: number): Promise<Account | null> {
-        const account = await this.repo.findOneBy({id});
 
-        if (account) {            
+        return this.data_source.transaction(async manager => {
+            const account = await manager.getRepository(AccountOrmEntity).findOneBy({id});
+
+            if (!account) return null;
+
             account.balance = Number(account.balance) + balance;
             const updated_acc = await this.repo.save(account);
 
@@ -75,7 +78,6 @@ export class AccountTypeOrmRepository implements AccountRepository {
                 updated_acc.created_at,
                 updated_acc.updated_at
             );
-        }
-        return null;
+        });
     }
 }

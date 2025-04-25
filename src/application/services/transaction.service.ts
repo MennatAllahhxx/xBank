@@ -40,7 +40,7 @@ export class TransactionService {
             await this.account_repo.updateAccountBalance(sender_account_id, amount * -1);
             await this.account_repo.updateAccountBalance(receiver_account_id, amount);
         } catch(_) {
-            throw Error('Error updating balnaces for both accounts')
+            throw Error('Error updating balances for both accounts')
         }
 
         return this.transaction_repo.createTransfer(trx);
