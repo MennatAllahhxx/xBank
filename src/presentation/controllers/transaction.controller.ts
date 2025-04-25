@@ -28,8 +28,8 @@ export class TransactionController {
                 return;
             }
 
-            if (amount === null || amount == undefined || amount == 0) {
-                res.status(400).json({ message: 'Amount is required' });
+            if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+                res.status(400).json({ message: 'A positive amount value is required' });
                 return;
             }
 
@@ -43,17 +43,16 @@ export class TransactionController {
             res.status(201).json(trx);
         } catch (err: any) {
             if (
-                err.message === 'Transefered amount must be greater than 0' ||
-                err.message === 'Receiver\'s account can not be the same as the sender\'s account' ||
-                err.message === 'Sender\'s account does not exist' ||
-                err.message === 'You are not allowed to manage this account' ||
-                err.message === 'Receiver\'s account does not exist' ||
-                err.message === 'Insufficient balance. Transaction can not be completed.'
+                err.message.includes('account') || 
+                err.message.includes('balance') || 
+                err.message.includes('amount') || 
+                err.message.includes('not allowed')
             ) {
-                res.status(400).json({ message: err.message });
-            } else {
-                res.status(500).json({ message: 'Internal server error' });
+                return res.status(400).json({ message: err.message });
             }
+
+            console.log('Error creating transaction: ', err);
+            return res.status(500).json({ message: 'Internal server error' });
         }
     }
 }

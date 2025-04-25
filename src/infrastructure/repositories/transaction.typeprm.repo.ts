@@ -23,7 +23,10 @@ export class TransactionTypeOrmRepository implements TransactionRepository {
         return new Transaction(
             saved_trx.sender_account_id,
             saved_trx.receiver_account_id,
-            saved_trx.amount
+            saved_trx.amount,
+            saved_trx.id,
+            saved_trx.created_at,
+            saved_trx.updated_at
         );
     }
 }

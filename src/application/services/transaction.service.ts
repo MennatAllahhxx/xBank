@@ -14,7 +14,7 @@ export class TransactionService {
         receiver_account_id: string,
         amount: number
     ) {
-        if (amount <= 0) throw Error('Transefered amount must be greater than 0');
+        if (amount <= 0) throw Error('Transeferred amount must be greater than 0');
 
         if (sender_account_id === receiver_account_id) throw Error('Receiver\'s account can not be the same as the sender\'s account');
 
