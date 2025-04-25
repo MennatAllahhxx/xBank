@@ -1,5 +1,5 @@
 export abstract class BaseEntity {
     protected id?: string;
-    protected createdAt?: Date;
-    protected updatedAt?: Date;
+    protected created_at?: Date;
+    protected updated_at?: Date;
 }

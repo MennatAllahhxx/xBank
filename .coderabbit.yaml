@@ -1,4 +1,6 @@
 reviews:
   auto_review:
+    enabled: true
+    default_branch_behavior: ignore
     base_branches:
       - dev
