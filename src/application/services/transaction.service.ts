@@ -37,8 +37,11 @@ export class TransactionService {
         );
 
         try {
-            await this.account_repo.updateAccountBalance(sender_account_id, amount * -1);
-            await this.account_repo.updateAccountBalance(receiver_account_id, amount);
+            await this.account_repo.updateAccountsBalancesAtomically(
+                sender_account_id,
+                receiver_account_id,
+                amount
+            );
         } catch(_) {
             throw Error('Error updating balances for both accounts')
         }

@@ -48,11 +48,12 @@ export class TransactionController {
                 err.message.includes('amount') || 
                 err.message.includes('not allowed')
             ) {
-                return res.status(400).json({ message: err.message });
+                res.status(400).json({ message: err.message });
+                return;
             }
 
             console.log('Error creating transaction: ', err);
-            return res.status(500).json({ message: 'Internal server error' });
+            res.status(500).json({ message: 'Internal server error' });
         }
     }
 }
