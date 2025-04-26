@@ -63,12 +63,13 @@ export class AccountTypeOrmRepository implements AccountRepository {
     async updateAccountBalance(id: string, amount: number): Promise<Account | null> {
 
         return this.data_source.transaction(async manager => {
-            const account = await manager.getRepository(AccountOrmEntity).findOneBy({id});
+            const acc_repo = manager.getRepository(AccountOrmEntity);
+            const account = await acc_repo.findOneBy({id});
 
             if (!account) return null;
 
             account.balance = Number(account.balance) + amount;
-            const updated_acc = await this.repo.save(account);
+            const updated_acc = await acc_repo.save(account);
 
             return new Account(
                 updated_acc.user_id,
@@ -88,16 +89,17 @@ export class AccountTypeOrmRepository implements AccountRepository {
     ): Promise<[Account | null, Account | null]> {
 
         return this.data_source.transaction(async manager => {
-            const sender_account = await manager.getRepository(AccountOrmEntity).findOneBy({id: sender_account_id});
-            const receiver_account = await manager.getRepository(AccountOrmEntity).findOneBy({id: receiver_account_id});
+            const acc_repo = manager.getRepository(AccountOrmEntity);
+            const sender_account = await acc_repo.findOneBy({id: sender_account_id});
+            const receiver_account = await acc_repo.findOneBy({id: receiver_account_id});
 
             if (!sender_account || !receiver_account) return [null, null];
 
 
             sender_account.balance = Number(sender_account.balance) - amount;
             receiver_account.balance = Number(receiver_account.balance) + amount;
-            const updated_sender_acc = await this.repo.save(sender_account);
-            const updated_receiver_acc = await this.repo.save(receiver_account);
+            const updated_sender_acc = await acc_repo.save(sender_account);
+            const updated_receiver_acc = await acc_repo.save(receiver_account);
 
             return [
                 new Account(
