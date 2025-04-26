@@ -4,3 +4,10 @@ reviews:
     default_branch_behavior: ignore
     base_branches:
       - dev
+    review_prompt: |
+      In addition to standard code review, check for consistency in:
+      - snake_case for variables and properties
+      - camelCase for methods
+      - PascalCase for class and interface names
+      - File naming consistency
+      - Error handling consistency

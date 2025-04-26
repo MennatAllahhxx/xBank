@@ -8,8 +8,8 @@ import { inject, injectable } from "tsyringe";
 export class UserTypeOrmRepository implements UserRepository {
     private repo;
 
-    constructor(@inject(DataSource) private dataSource: DataSource) {
-        this.repo = this.dataSource.getRepository(UserOrmEntity);
+    constructor(@inject(DataSource) private data_source: DataSource) {
+        this.repo = this.data_source.getRepository(UserOrmEntity);
     }
 
     async createUser(user: User): Promise<User> {

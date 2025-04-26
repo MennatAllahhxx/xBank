@@ -15,7 +15,7 @@ export class AccountController {
 
             if (!user_id || !account_type|| (balance === undefined || balance === null)) {
                 res.status(400).json({
-                    message: "user_id, account_type and initial blance are all required to create an account"
+                    message: "user_id, account_type and initial balance are all required to create an account"
                 });                
                 return;
             }
