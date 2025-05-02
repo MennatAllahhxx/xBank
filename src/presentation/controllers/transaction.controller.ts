@@ -79,6 +79,16 @@ export class TransactionController {
                 return;
             }
 
+            if (start_date && end_date) {
+                const start_date_obj = new Date(start_date as string);
+                const end_date_obj = new Date(end_date as string);
+
+                if (isNaN(start_date_obj.getTime()) || isNaN(end_date_obj.getTime())) {
+                    res.status(400).json({ message: 'Invalid date format' });
+                return;
+                }
+            }
+
 
             const trx: Transaction[] = await this.transaction_service.getTransactions(
                 user.role,
@@ -96,7 +106,7 @@ export class TransactionController {
             if (
                 err.message.includes('Unauthorized') ||
                 err.message.includes('account') ||
-                err.message.includes('provided') ||
+                err.message.includes('date') ||
                 err.message.includes('Both') ||
                 err.message.includes('entities')
             ) {
