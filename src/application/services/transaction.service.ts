@@ -1,4 +1,5 @@
 import { Transaction } from "../../core/entities/transaction.entity.js";
+import { UserRole } from "../../core/entities/user.entity.js";
 import { AccountRepository } from "../../core/interfaces/account.repo.interface.js";
 import { TransactionRepository } from "../../core/interfaces/transaction.repo.interface.js";
 
@@ -47,5 +48,41 @@ export class TransactionService {
         }
 
         return this.transaction_repo.createTransfer(trx);
+    }
+
+    async getTransactions(
+        role: UserRole,
+        user_id: string,
+        page: number,
+        limit: number,
+        account_id?: string,
+        type?: string,
+        start_date?: Date,
+        end_date?: Date
+    ){
+        if (page < 1 || limit < 1) throw Error('Both page and limit must be greater than 0');
+
+        const acc_ids = [];
+
+        if (account_id) {
+            const account = await this.account_repo.getAccountById(account_id);
+
+            if (!account) throw Error('This account does not exist');
+
+            if (role === UserRole.USER && account.user_id !== user_id)
+                throw Error('You are not allowed to manage this account');
+            acc_ids.push(account_id);
+        } else if (role === UserRole.USER) {
+            (await this.account_repo.getAccountsByUserId(user_id)).map(acc => acc_ids.push(acc.getId()));
+        }
+
+        return await this.transaction_repo.getTransactions(
+            page,
+            limit,
+            acc_ids,
+            type,
+            start_date,
+            end_date
+        );
     }
 }

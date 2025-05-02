@@ -20,4 +20,10 @@ TransactionRouter.post(
     transaction_controller.createTransaction.bind(transaction_controller)
 );
 
+TransactionRouter.get(
+    '/transactions/history',
+    authMiddleware,
+    transaction_controller.getTransactions.bind(transaction_controller)
+);
+
 export default TransactionRouter;

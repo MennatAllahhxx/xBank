@@ -56,4 +56,71 @@ export class TransactionController {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
+
+    getTransactions = async (req: AuthRequest, res: Response) => {
+        try {
+            const {
+                page,
+                limit,
+                account_id,
+                type,
+                start_date,
+                end_date
+            } = req.query;
+
+            const user = req.user;
+            if (!user) {
+                res.status(401).json({ message: 'Unauthorized.' });
+                return;
+            }
+
+            if ((start_date || end_date) && !(start_date && end_date)) {
+                res.status(400).json({ message: 'Start date and end date must be provided together' });
+                return;
+            }
+
+            if (start_date && end_date) {
+                const start_date_obj = new Date(start_date as string);
+                const end_date_obj = new Date(end_date as string);
+
+                if (isNaN(start_date_obj.getTime()) || isNaN(end_date_obj.getTime())) {
+                    res.status(400).json({ message: 'Invalid date format' });
+                    return;
+                }
+
+                if (start_date_obj > end_date_obj) {
+                    res.status(400).json({ message: 'Start date must be before end date' });
+                    return;
+                }
+            }
+
+
+            const trx: Transaction[] = await this.transaction_service.getTransactions(
+                user.role,
+                user.id,
+                page? parseInt(page as string) : 1,
+                limit? parseInt(limit as string) : 10,
+                account_id as string,
+                type as string,
+                start_date? new Date(start_date as string) : undefined,
+                end_date? new Date(end_date as string) : undefined
+            );
+
+            res.status(200).json(trx);
+        } catch (err: any) {
+            if (
+                err.message.includes('Unauthorized') ||
+                err.message.includes('account') ||
+                err.message.includes('date') ||
+                err.message.includes('Both') ||
+                err.message.includes('entities')
+            ) {
+                res.status(400).json({ message: err.message });
+                return;
+            }
+
+            console.log('Error getting transactions: ', err);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 }
