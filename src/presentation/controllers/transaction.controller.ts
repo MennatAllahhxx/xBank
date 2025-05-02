@@ -56,4 +56,54 @@ export class TransactionController {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
+
+    getTransactions = async (req: AuthRequest, res: Response) => {
+        try {
+            const {
+                page,
+                limit,
+                account_id,
+                type,
+                start_date,
+                end_date
+            } = req.query;
+
+            const user = req.user;
+            if (!user) {
+                res.status(400).json({ message: 'Unauthorized.' });
+                return;
+            }
+
+            if ((start_date || end_date) && !(start_date && end_date)) {
+                res.status(400).json({ message: 'Start date and end date must be provided together' });
+                return;
+            }
+
+
+            const trx: Transaction[] = await this.transaction_service.getTransactions(
+                user.role,
+                user.id,
+                page? parseInt(page as string) : 1,
+                limit? parseInt(limit as string) : 10,
+                account_id as string,
+                type as string,
+                start_date as unknown as Date,
+                end_date as unknown as Date
+            );
+
+            res.status(201).json(trx);
+        } catch (err: any) {
+            if (
+                err.message.includes('Unauthorized') ||
+                err.message.includes('account') ||
+                err.message.includes('provided')
+            ) {
+                res.status(400).json({ message: err.message });
+                return;
+            }
+
+            console.log('Error getting transactions: ', err);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 }
