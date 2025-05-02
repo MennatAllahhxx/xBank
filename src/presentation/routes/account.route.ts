@@ -9,17 +9,17 @@ import { UserRole } from "../../core/entities/user.entity.js";
 
 const AccountRouter = express.Router();
 
-const userRepository = container.resolve<UserRepository>('UserRepository');
-const accountRepository = container.resolve<AccountRepository>('AccountRepository');
-const accountService = new AccountService(accountRepository, userRepository);
-const accountController = new AccountController(accountService);
+const user_repository = container.resolve<UserRepository>('UserRepository');
+const account_repository = container.resolve<AccountRepository>('AccountRepository');
+const account_service = new AccountService(account_repository, user_repository);
+const account_controller = new AccountController(account_service);
 
 // Admin routes
 AccountRouter.post(
     '/accounts',
     authMiddleware,
     isAuthorized([UserRole.ADMIN]),
-    accountController.createAccount.bind(accountController)
+    account_controller.createAccount.bind(account_controller)
 );
 
 // Admin and support routes
@@ -27,7 +27,7 @@ AccountRouter.get(
     '/accounts/:userId',
     authMiddleware,
     isAuthorized([UserRole.ADMIN, UserRole.SUPPORT]),
-    accountController.getAccountsByUserId.bind(accountController)
+    account_controller.getAccountsByUserId.bind(account_controller)
 );
 
 export default AccountRouter;

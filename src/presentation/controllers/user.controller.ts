@@ -45,9 +45,10 @@ export class UserController {
 
             res.status(201).json(user_without_password);
         } catch (err: any) {
-            if (err.message === 'Email already exists' 
-                || err.message === 'Password must be at least 8 characters long' 
-                || err.message === 'Invalid email format'
+            if (
+                err.message === 'Email already exists' ||
+                err.message === 'Password must be at least 8 characters long' ||
+                err.message === 'Invalid email format'
             ) {
                 res.status(400).json({ message: err.message });
             } else {
@@ -78,9 +79,10 @@ export class UserController {
                 res.status(201).json(user_without_password);
             }
         } catch (err: any) {
-            if (err.message === 'Email is already used' 
-                || err.message === 'Password must be at least 8 characters long' 
-                || err.message === 'Invalid email format') {
+            if (err.message === 'Email is already used' ||
+                err.message === 'Password must be at least 8 characters long' ||
+                err.message === 'Invalid email format'
+            ) {
                     res.status(400).json({ message: err.message });
                 } else {
                     res.status(500).json({ message: 'Internal server error' });
@@ -110,9 +112,10 @@ export class UserController {
                 res.status(201).json(user_without_password);
             }
         } catch (err: any) {
-            if (err.message === 'Email is already used' 
-                || err.message === 'Password must be at least 8 characters long' 
-                || err.message === 'Invalid email format') {
+            if (err.message === 'Email is already used' ||
+                err.message === 'Password must be at least 8 characters long' ||
+                err.message === 'Invalid email format'
+            ) {
                     res.status(400).json({ message: err.message });
                 } else {
                     res.status(500).json({ message: 'Internal server error' });
@@ -152,7 +155,7 @@ export class UserController {
 
                 res.status(200).json(user_without_password);
             }
-        } catch (err: any) {
+        } catch (_) {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
@@ -169,7 +172,7 @@ export class UserController {
                 res.status(200).json(user_without_password);
             }
         }
-        catch (err: any) {
+        catch (_) {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
@@ -185,7 +188,7 @@ export class UserController {
 
                 res.status(200).json(user_without_password);
             }
-        } catch (err: any) {
+        } catch (_) {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
@@ -202,7 +205,7 @@ export class UserController {
             });
 
             res.status(200).json(usersWithoutPassword);
-        } catch (err: any) {
+        } catch (_) {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
@@ -217,7 +220,7 @@ export class UserController {
             });
 
             res.status(200).json(users_without_password);
-        } catch (err: any) {
+        } catch (_) {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
@@ -230,7 +233,7 @@ export class UserController {
             } else {
                 res.status(200).json({ message: "User deleted successfully" });
             }
-        } catch (err: any) {
+        } catch (_) {
             res.status(500).json({ message: 'Internal server error' });
         }
     }

@@ -5,6 +5,7 @@ import { AppDataSource } from './infrastructure/db/database.js';
 import './infrastructure/di.js';
 import UserRouter from "./presentation/routes/user.route.js";
 import AccountRouter from './presentation/routes/account.route.js';
+import TransactionRouter from './presentation/routes/transaction.route.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ AppDataSource.initialize().then(async () => {
 
     app.use(UserRouter);
     app.use(AccountRouter);
+    app.use(TransactionRouter);
     
     app.listen(port, () => console.log(`app is running on port: ${port}`));
 }).catch((err: Error) => { console.log(err) });
