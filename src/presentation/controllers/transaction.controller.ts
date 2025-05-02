@@ -70,7 +70,7 @@ export class TransactionController {
 
             const user = req.user;
             if (!user) {
-                res.status(400).json({ message: 'Unauthorized.' });
+                res.status(401).json({ message: 'Unauthorized.' });
                 return;
             }
 
@@ -85,7 +85,12 @@ export class TransactionController {
 
                 if (isNaN(start_date_obj.getTime()) || isNaN(end_date_obj.getTime())) {
                     res.status(400).json({ message: 'Invalid date format' });
-                return;
+                    return;
+                }
+
+                if (start_date_obj > end_date_obj) {
+                    res.status(400).json({ message: 'Start date must be before end date' });
+                    return;
                 }
             }
 
