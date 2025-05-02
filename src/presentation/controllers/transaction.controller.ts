@@ -87,16 +87,18 @@ export class TransactionController {
                 limit? parseInt(limit as string) : 10,
                 account_id as string,
                 type as string,
-                start_date as unknown as Date,
-                end_date as unknown as Date
+                start_date? new Date(start_date as string) : undefined,
+                end_date? new Date(end_date as string) : undefined
             );
 
-            res.status(201).json(trx);
+            res.status(200).json(trx);
         } catch (err: any) {
             if (
                 err.message.includes('Unauthorized') ||
                 err.message.includes('account') ||
-                err.message.includes('provided')
+                err.message.includes('provided') ||
+                err.message.includes('Both') ||
+                err.message.includes('entities')
             ) {
                 res.status(400).json({ message: err.message });
                 return;

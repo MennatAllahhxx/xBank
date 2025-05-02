@@ -38,62 +38,46 @@ export class TransactionTypeOrmRepository implements TransactionRepository {
         start_date?: Date,
         end_date?: Date
     ): Promise<Array<Transaction>> {
-        let return_trx: Array<Transaction> = [];
-        let all_trx;
-
         // TODO: to be implemented later
         if (type) return [];
 
-        if (account_ids && account_ids.length) {
-            if (start_date && end_date)
-                all_trx = await this.repo.find({
-                    where: [
-                        {
-                            created_at: Between(start_date, end_date),
-                            receiver_account_id: In(account_ids)
-                        },
-                        {
-                            created_at: Between(start_date, end_date),
-                            sender_account_id: In(account_ids)
-                        }
-                    ],
-                    skip: (page - 1) * limit,
-                    take: limit
-                });
-            else
-                all_trx = await this.repo.find({
-                    where: [
-                        {receiver_account_id: In(account_ids)},
-                        {sender_account_id: In(account_ids)},
-                    ],
-                    skip: (page - 1) * limit,
-                    take: limit
-                });
-        } else {
-            if (start_date && end_date)
-                all_trx = await this.repo.find({
-                    where: {
-                        created_at: Between(start_date, end_date)
-                    },
-                    skip: (page - 1) * limit,
-                    take: limit
-                });
-            else
-                all_trx = await this.repo.find({
-                    skip: (page - 1) * limit,
-                    take: limit
-                }); ;
+        const query_options: any = {
+            skip: (page - 1) * limit,
+            take: limit
+        };
+
+        if (start_date && end_date) {
+            const date_condition = { created_at: Between(start_date, end_date) };
+
+            if (account_ids?.length) {
+                query_options.where = [
+                    { ...date_condition, receiver_account_id: In(account_ids) },
+                    { ...date_condition, sender_account_id: In(account_ids) }
+                ]
+            } else {
+                query_options.where = date_condition;
+            }
+        } else if (account_ids?.length) {
+            query_options.where = [
+                { receiver_account_id: In(account_ids) },
+                { sender_account_id: In(account_ids) }
+            ]
         }
 
-        return_trx = all_trx.map(trx => new Transaction(
-            trx.sender_account_id,
-            trx.receiver_account_id,
-            trx.amount,
-            trx.id,
-            trx.created_at,
-            trx.updated_at
-        ));
+        const all_trx = await this.repo.find(query_options);
 
-        return return_trx;
+        try {
+            return all_trx.map(trx => new Transaction(
+                trx.sender_account_id,
+                trx.receiver_account_id,
+                trx.amount,
+                trx.id,
+                trx.created_at,
+                trx.updated_at
+            ));
+        } catch (err) {
+            console.log('Error mapping transaction entities: ', err);
+            throw new Error('Failed to process transaction data');
+        }
     }
 }

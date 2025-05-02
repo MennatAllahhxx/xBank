@@ -55,21 +55,23 @@ export class TransactionService {
         user_id: string,
         page: number,
         limit: number,
-        acccount_id?: string,
+        account_id?: string,
         type?: string,
         start_date?: Date,
         end_date?: Date
     ){
+        if (page < 1 || limit < 1) throw Error('Both page and limit must be greater than 0');
+
         const acc_ids = [];
 
-        if (acccount_id) {
-            const account = await this.account_repo.getAccountById(acccount_id);
+        if (account_id) {
+            const account = await this.account_repo.getAccountById(account_id);
 
             if (!account) throw Error('This account does not exist');
 
             if (role === UserRole.USER && account.user_id !== user_id)
                 throw Error('You are not allowed to manage this account');
-            acc_ids.push(acccount_id);
+            acc_ids.push(account_id);
         } else if (role === UserRole.USER) {
             (await this.account_repo.getAccountsByUserId(user_id)).map(acc => acc_ids.push(acc.getId()));
         }
@@ -78,9 +80,9 @@ export class TransactionService {
             page,
             limit,
             acc_ids,
-            type?? undefined,
-            start_date?? undefined,
-            end_date?? undefined
+            type,
+            start_date,
+            end_date
         );
     }
 }
