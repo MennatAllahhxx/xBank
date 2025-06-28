@@ -17,7 +17,7 @@ const transaction_controller = new TransactionController(transaction_service);
 TransactionRouter.post(
     '/transactions/transfer',
     authMiddleware,
-    transaction_controller.createTransaction.bind(transaction_controller)
+    transaction_controller.createTransfer.bind(transaction_controller)
 );
 
 TransactionRouter.get(

@@ -1,4 +1,4 @@
-import { Transaction } from "../../core/entities/transaction.entity.js";
+import { Source, Status, Transaction, Type } from "../../core/entities/transaction.entity.js";
 import { UserRole } from "../../core/entities/user.entity.js";
 import { AccountRepository } from "../../core/interfaces/account.repo.interface.js";
 import { TransactionRepository } from "../../core/interfaces/transaction.repo.interface.js";
@@ -32,13 +32,16 @@ export class TransactionService {
         if (Number(sender_account.balance) < amount) throw Error('Insufficient balance. Transaction can not be completed.');
 
         const trx = new Transaction(
-            sender_account_id,
             receiver_account_id,
-            amount
+            amount,
+            Source.INTERNAL,
+            Status.COMPLETED,
+            Type.TRANSFER,
+            sender_account_id,
         );
 
         try {
-            await this.account_repo.updateAccountsBalancesAtomically(
+            await this.account_repo.updateAccountsBalancesAfterInternalTransfer(
                 sender_account_id,
                 receiver_account_id,
                 amount
@@ -47,7 +50,7 @@ export class TransactionService {
             throw Error('Error updating balances for both accounts')
         }
 
-        return this.transaction_repo.createTransfer(trx);
+        return this.transaction_repo.createTransaction(trx);
     }
 
     async getTransactions(
@@ -84,5 +87,9 @@ export class TransactionService {
             start_date,
             end_date
         );
+    }
+
+    async getTransactionByPaymentIntentId(payment_intent_id: string) {
+        return await this.transaction_repo.getTransactionByPaymentIntentId(payment_intent_id);
     }
 }

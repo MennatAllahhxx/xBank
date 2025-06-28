@@ -6,6 +6,7 @@ import './infrastructure/di.js';
 import UserRouter from "./presentation/routes/user.route.js";
 import AccountRouter from './presentation/routes/account.route.js';
 import TransactionRouter from './presentation/routes/transaction.route.js';
+import WebhookRouter from './presentation/routes/webhook.route.js';
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ AppDataSource.initialize().then(async () => {
     console.log('Database connected');
 
     const app = express();
+    app.use(WebhookRouter);
+
     app.use(express.json());
 
     const port = process.env.PORT || 3000;

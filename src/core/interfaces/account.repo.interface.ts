@@ -4,8 +4,9 @@ export interface AccountRepository {
     createAccount(account: Account): Promise<Account>;
     getAccountsByUserId(user_id: string): Promise<Array<Account>>;
     getAccountById(id: string): Promise<Account | null>;
-    updateAccountBalance(id: string, amount: number): Promise<Account | null>;
-    updateAccountsBalancesAtomically(
+    updateAccountBalanceAfterDeposit(id: string, amount: number): Promise<Account | null>;
+    updateAccountBalanceAfterWithdrawl(id: string, amount: number): Promise<Account | null>;
+    updateAccountsBalancesAfterInternalTransfer(
         sender_account_id: string,
         receiver_account_id: string,
         amount: number
