@@ -60,7 +60,7 @@ export class AccountTypeOrmRepository implements AccountRepository {
         return null;
     }
 
-    async updateAccountBalance(id: string, amount: number): Promise<Account | null> {
+    async updateAccountBalanceAfterDeposit(id: string, amount: number): Promise<Account | null> {
 
         return this.data_source.transaction(async manager => {
             const acc_repo = manager.getRepository(AccountOrmEntity);
@@ -82,7 +82,29 @@ export class AccountTypeOrmRepository implements AccountRepository {
         });
     }
 
-    async updateAccountsBalancesAtomically(
+    async updateAccountBalanceAfterWithdrawal(id: string, amount: number): Promise<Account | null> {
+
+        return this.data_source.transaction(async manager => {
+            const acc_repo = manager.getRepository(AccountOrmEntity);
+            const account = await acc_repo.findOneBy({id});
+
+            if (!account) return null;
+
+            account.balance = Number(account.balance) - amount;
+            const updated_acc = await acc_repo.save(account);
+
+            return new Account(
+                updated_acc.user_id,
+                updated_acc.account_type,
+                updated_acc.balance,
+                updated_acc.id,
+                updated_acc.created_at,
+                updated_acc.updated_at
+            );
+        });
+    }
+
+    async updateAccountsBalancesAfterInternalTransfer(
         sender_account_id: string,
         receiver_account_id: string,
         amount: number

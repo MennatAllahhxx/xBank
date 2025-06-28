@@ -1,7 +1,7 @@
-import { Transaction } from "../entities/transaction.entity.js";
+import { Status, Transaction } from "../entities/transaction.entity.js";
 
 export interface TransactionRepository {
-    createTransfer(transaction: Transaction): Promise<Transaction>;
+    createTransaction(transaction: Transaction): Promise<Transaction>;
     getTransactions(
         page:number,
         limit: number,
@@ -10,4 +10,9 @@ export interface TransactionRepository {
         start_date?: Date,
         end_date?: Date
     ): Promise<Array<Transaction>>;
+    updateTransactionStatus(
+        id: string,
+        status: Status
+    ): Promise<Transaction | null>;
+    getTransactionByPaymentIntentId(payment_intent_id: string): Promise<Transaction | null>;
 }

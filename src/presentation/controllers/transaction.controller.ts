@@ -8,7 +8,7 @@ export class TransactionController {
         this.transaction_service = transaction_service;
     }
 
-    createTransaction = async (req: AuthRequest, res: Response) => {
+    createTransfer = async (req: AuthRequest, res: Response) => {
         try {
             const {sender_account_id, receiver_account_id, amount} = req.body;
             const user_id = req.user?.id;
