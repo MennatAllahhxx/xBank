@@ -23,7 +23,7 @@ export class TransactionOrmEntity extends BaseOrmEntity implements Transaction {
     type!: Type;
 
     @Column({ type: 'uuid', nullable: true })
-    @ManyToOne(()=> AccountOrmEntity, { onDelete: 'CASCADE' })
+    @ManyToOne(()=> AccountOrmEntity, { onDelete: 'SET NULL' })
     @JoinColumn({ name: 'sender_account_id' })
     sender_account_id?: string;
 
