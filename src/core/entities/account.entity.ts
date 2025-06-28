@@ -7,9 +7,7 @@ export enum AccountType {
 
 export class Account extends BaseEntity {
     user_id: string;
-
     account_type: AccountType;
-
     balance: number;
 
     constructor(
