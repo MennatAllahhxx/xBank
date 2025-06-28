@@ -25,7 +25,7 @@ export class Transaction extends BaseEntity {
     status: Status;
     type: Type;
     sender_account_id?: string;
-    external_paymenrt_id?: string;
+    external_payment_id?: string;
     payment_intent_id?: string;
 
     constructor(

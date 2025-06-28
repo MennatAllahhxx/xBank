@@ -82,7 +82,7 @@ export class AccountTypeOrmRepository implements AccountRepository {
         });
     }
 
-    async updateAccountBalanceAfterWithdrawl(id: string, amount: number): Promise<Account | null> {
+    async updateAccountBalanceAfterWithdrawal(id: string, amount: number): Promise<Account | null> {
 
         return this.data_source.transaction(async manager => {
             const acc_repo = manager.getRepository(AccountOrmEntity);

@@ -12,12 +12,14 @@ export class WebhookController {
 
             if (!amount || !currency || !account_id) {
                 res.status(400).json({ message: 'Missing required fields' });
+                return;
             }
 
             const paymentIntent = await this.webhook_service.createAndConfirmStripeDepositIntent(
                 amount,
                 currency,
-                account_id
+                account_id,
+                'pm_card_visa'
             );
 
             res.status(201).json({ message: 'PaymentIntent created & confirmed', paymentIntent });

@@ -10,14 +10,17 @@ export class WebhookService {
         private readonly transaction_repo: TransactionRepository,
         private readonly account_repo: AccountRepository
     ) {
-        this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+        if (!process.env.STRIPE_SECRET_KEY) {
+            throw new Error('STRIPE_SECRET_KEY is not set in environment variables');
+        }
+        this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     }
 
-    async createAndConfirmStripeDepositIntent(amount: number, currency: string, account_id: string) {
+    async createAndConfirmStripeDepositIntent(amount: number, currency: string, account_id: string, payment_method: string) {
         const paymentIntent = await this.stripe.paymentIntents.create({
             amount,
             currency,
-            payment_method: 'pm_card_visa',
+            payment_method,
             confirm: true,
             payment_method_types: ['card'],
             metadata: { account_id }
@@ -27,11 +30,19 @@ export class WebhookService {
     }
 
     private verifyStripeSignature(raw_body: Buffer, signature: string) {
+        if (!signature) {
+            throw Error('Missing Stripe signature');
+        }
+    
+        if (!Buffer.isBuffer(raw_body)) {
+            throw Error('Invalid request body format');
+        }
+
         try {
             return this.stripe.webhooks.constructEvent(
-                raw_body as Buffer,
+                raw_body,
                 signature,
-                process.env.STRIPE_WEBHOOK_SECRET || ''
+                process.env.STRIPE_WEBHOOK_SECRET!
             );
         } catch (err: any) {
             throw new Error(`Webhook signature verification failed: ${err.message}`);
